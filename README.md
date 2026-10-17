@@ -2,11 +2,10 @@
 
 **English** | [Dansk](README.DA.md)
 
-
 A lightweight dashboard for managing two, three or four Pi-hole v6 instances from one
 interface. The solution consists of a single self-contained `index.html` with
 no backend, database or build process. The browser communicates directly with
-the active Pi-hole REST APIs through an nginx reverse proxy.
+the active Pi-hole instances' REST APIs through an nginx reverse proxy.
 
 The dashboard includes:
 
@@ -36,7 +35,7 @@ The dashboard is deliberately simple:
 - No database
 - No build process
 - No Node.js, PHP or Python
-- Server count and global names is configured in the HTML file; custom names and interface preferences stored locally in the browser
+- Server count and default names shared across browsers are configured in the HTML file; custom names and interface preferences are stored locally in the browser
 - Direct communication with the Pi-hole v6 APIs through nginx
 
 Chart.js is loaded as a separate local file and is only used for charts.
@@ -49,12 +48,13 @@ Chart.js is loaded as a separate local file and is only used for charts.
   `/api1/...` and `/api2/...`, plus `/api3/...` and `/api4/...` when used,
   must be forwarded to their corresponding Pi-hole instances. This avoids CORS issues.
 - An app password for each Pi-hole. Create it under **Settings → API** in each
-  Pi-hole administration interface.
+  Pi-hole's own web interface.
 
 ## Setup
 
 1. Copy `index.html` to the directory served by nginx, for example
    `/srv/web/pihole-dashboard/index.html`.
+   Copy `language.js` to the same directory to enable German and other contributed languages.
 2. Download Chart.js to the same directory:
 
    ```bash
@@ -64,32 +64,33 @@ Chart.js is loaded as a separate local file and is only used for charts.
 
 3. Copy `nginx.conf.example` to your nginx configuration.
 4. Adjust the domain, Pi-hole addresses, certificate paths and web root.
-   Set `DEFAULT_SERVER_COUNT` in `index.html` to `2`, `3` or `4`. The nginx
-   example enables `/api1/` and `/api2/` by default. Uncomment and adjust the
-   `/api3/` block for three instances, and both `/api3/` and `/api4/` for four.
+   Set `DEFAULT_SERVER_COUNT` in `index.html` to `2`, `3` or `4`.
+   The nginx example enables `/api1/` and `/api2/` by default. Uncomment and
+   adjust the `/api3/` block for three instances. For four instances, enable
+   and adjust both `/api3/` and `/api4/`.
 5. Test and reload nginx:
 
    ```bash
    nginx -t && systemctl reload nginx
    ```
 
-6. Open the dashboard URL and log in to each active Pi-hole instance with their app
-   passwords.
+6. Open the dashboard URL and log in to each active Pi-hole instance with its
+   app password.
 
 ## Server count and names
 
 The number of active Pi-hole instances is set **only in `index.html`**:
 
 ```js
-const DEFAULT_SERVER_COUNT = 2; // 2, 3 or 4
+const DEFAULT_SERVER_COUNT = 2; // 2, 3 eller 4
 ```
 
 The first two, three or four entries in `DEFAULT_SERVERS` are used. The API
-paths are `/api1`, `/api2`, `/api3` and `/api4`; configure nginx for each active
-instance. Actual Pi-hole host names or IP addresses belong in nginx, not in
-the browser settings.
+paths are `/api1`, `/api2`, `/api3` and `/api4`; configure nginx with a proxy
+for each active instance. Actual host names or IP addresses belong in nginx,
+not in the browser settings.
 
-Default display names for all clients are set using `label` in `DEFAULT_SERVERS`:
+Default display names shared across browsers are set using `label` in `DEFAULT_SERVERS`:
 
 ```js
 const DEFAULT_SERVERS = [
@@ -112,13 +113,58 @@ names.
 
 ## Languages
 
-The user interface is available in Danish and English. On first use, the
-language is selected automatically from the browser language. It can then be
-changed at the top of the dashboard, and the selection is stored locally in
-the browser.
+The user interface is available in **English** and **Dansk**.
+The language selector at the top of the dashboard changes the interface
+immediately, including dialog text, dynamic messages, tables and charts.
+Numbers, percentages, dates and times follow the selected language.
+
+The initial language is selected in this order:
+
+1. A supported language previously selected and saved in the browser's
+   `localStorage`.
+2. The first supported language in the browser's ordered language preferences.
+   Regional variants such as `de-DE`, `de-AT`, `en-GB` and `da-DK` are supported.
+3. English if no supported language is found.
+
+Danish and English are built into `index.html`. The optional [language.js](language.js)
+adds German and can register further contributed languages. Place it beside
+`index.html` to enable them. If the file is missing or cannot be loaded, the
+dashboard continues with Danish and English. Unavailable languages are omitted
+from the selector. An unavailable saved language falls back to a supported
+browser language, then English.
+
+Each language in `window.PIHOLE_LANGUAGES` supplies `label` (the language's native
+name), `locale`, `author` and `messages`. Copy the complete English catalog from
+`I18N.en` in `index.html`, translate the values and retain every key and named
+parameter. Complete, valid contributions are added automatically. Incomplete
+or invalid contributions are skipped. This file cannot replace the built-in
+Danish and English languages. Update `index.html` and `language.js` together
+when message keys change.
+
+Use [language.template.js](language.template.js) as the template for a new language.
+It contains every message key and instructions for translators. Catalogs use
+`.one` for the language's singular category and `.other` for all remaining
+numbers, including zero, two, few and many plural categories.
+
+Translations use stable message keys and named parameters. Additional languages
+need no backend, build process or extra dependencies. User-supplied values such
+as domains, names and comments are never translated.
+
+**Credits:** Daniel Dietz contributed the key-based localization engine and
+German translation. This version builds on his work through commit `4a32733`.
+His name is also shown beside the language selector when German is selected.
+Other translators can be credited through the language's `author` field.
+
+Setup instructions and nginx examples are available in Danish and English:
+
+| Language | Documentation | nginx example |
+| --- | --- | --- |
+| English | [README.md](README.md) | [nginx.conf.example](nginx.conf.example) |
+| Dansk | [README.DA.md](README.DA.md) | [nginx.conf.DA.example](nginx.conf.DA.example) |
 
 ## Security
 
+- API and login requests reject HTTP redirects. Configure nginx to proxy directly to the final Pi-hole API URL, including the correct HTTP or HTTPS scheme.
 - The dashboard is intended for personal use or for people you trust. Anyone
   who can log in receives administrative access to the connected Pi-hole
   instances.
@@ -139,7 +185,7 @@ access control in front of it.
 
 - **v1.1.005:** Complete Danish and English interfaces and documentation
 - **v1.2.006:** Support for two, three or four Pi-hole instances
-- **v1.3.xxx:** Additional languages
+- **v1.3.007:** Language engine rewritten to use message keys, with additional languages in language.js
 - **v1.4.xxx:** Docker image and simplified installation
 
 The dashboard supports two to four active instances. Additional instances
@@ -147,8 +193,12 @@ require both the matching server count in `index.html` and a proxy route in ngin
 
 ## Contributing
 
+**Development language:** Source comments and fallback HTML text are maintained in Danish. Translation catalogs keep their respective languages. Existing function names, API fields and message keys are retained for compatibility.
+
 Issues and pull requests are welcome. Contributions may include bug fixes,
-suggestions and, in future versions, translations into additional languages.
+suggestions and translations into additional languages. Keep message keys and
+named parameters consistent across all language catalogs, and include
+translations for static text, dynamic states and accessibility labels.
 
 ## License
 
@@ -159,7 +209,7 @@ The project was originally developed for Pi-hole v5 in 2023 and updated for
 Pi-hole v6 in 2026.
 
 The project is released under the MIT License and may be used, copied, modified
-and redistributed in accordance with the terms of the license. See `LICENSE`.
+and redistributed in accordance with its terms. See `LICENSE`.
 
 Chart.js is not included and must be downloaded separately as described in the
 setup instructions. Chart.js is an independent third-party project with its

@@ -54,6 +54,7 @@ Chart.js indlæses som en separat lokal fil og bruges kun til graferne.
 
 1. Kopiér `index.html` til den mappe, hvor nginx skal levere kontrolpanelet fra,
    eksempelvis `/srv/web/pihole-dashboard/index.html`.
+   Kopiér `language.js` til samme mappe for at aktivere tysk og andre sprogbidrag.
 2. Download Chart.js til samme mappe:
 
    ```bash
@@ -110,12 +111,57 @@ netop den browser. Antallet og API-stierne kan ikke ændres under Indstillinger.
 
 ## Sprog
 
-Brugerfladen findes på dansk og engelsk. Første gang vælges sproget automatisk
-ud fra browserens sprog. Det kan efterfølgende ændres øverst i kontrolpanelet,
-og valget gemmes lokalt i browseren.
+Brugerfladen findes på **English** og **Dansk**.
+Sprogvælgeren øverst i kontrolpanelet ændrer straks brugerfladen, herunder
+dialogtekster, dynamiske meddelelser, tabeller og grafer. Tal, procenttal,
+datoer og klokkeslæt følger det valgte sprog.
+
+Det indledende sprog vælges i denne rækkefølge:
+
+1. Et understøttet sprog, der tidligere er valgt og gemt i browserens
+   `localStorage`.
+2. Det første understøttede sprog i browserens prioriterede sprogliste.
+   Regionale varianter som `de-DE`, `de-AT`, `en-GB` og `da-DK` understøttes.
+3. Engelsk, hvis der ikke findes et understøttet sprog.
+
+Dansk og engelsk er indbygget i `index.html`. Den valgfrie [language.js](language.js)
+tilføjer tysk og kan registrere flere sprogbidrag. Læg filen ved siden af
+`index.html` for at aktivere dem. Mangler filen, eller kan den ikke indlæses,
+fortsætter kontrolpanelet med dansk og engelsk. Sprog, der ikke er tilgængelige,
+udelades fra sproglisten. Et gemt sprog, som mangler, falder tilbage til et
+understøttet browsersprog og derefter engelsk.
+
+Hvert sprog i `window.PIHOLE_LANGUAGES` angiver `label` (sprogets eget navn),
+`locale`, `author` og `messages`. Kopiér hele det engelske katalog fra `I18N.en`
+i `index.html`, oversæt værdierne og bevar alle nøgler og navngivne parametre.
+Komplette, gyldige bidrag tilføjes automatisk. Ufuldstændige eller ugyldige
+bidrag springes over. Filen kan ikke erstatte indbygget dansk og engelsk.
+Opdatér `index.html` og `language.js` sammen, når tekstnøglerne ændres.
+
+Brug [language.template.js](language.template.js) som skabelon til et nyt sprog.
+Skabelonen indeholder alle tekstnøgler og en vejledning til oversættere.
+Katalogerne bruger `.one` til ental efter sprogets regler og `.other` til alle
+øvrige antal, også når sproget har kategorierne zero, two, few eller many.
+
+Oversættelserne bruger faste tekstnøgler og navngivne parametre. Flere sprog
+kræver hverken backend, buildproces eller ekstra afhængigheder. Værdier som
+domæner, navne og kommentarer fra brugeren oversættes aldrig.
+
+**Kreditering:** Daniel Dietz har bidraget med den nøglebaserede sprogmotor og
+den tyske oversættelse. Denne version bygger på hans arbejde frem til commit
+`4a32733`. Hans navn vises også ved sprogvælgeren, når tysk er valgt. Andre
+oversættere kan krediteres gennem sprogets `author`-felt.
+
+Opsætningsvejledning og nginx-eksempler findes på dansk og engelsk:
+
+| Sprog | Dokumentation | nginx-eksempel |
+| --- | --- | --- |
+| English | [README.md](README.md) | [nginx.conf.example](nginx.conf.example) |
+| Dansk | [README.DA.md](README.DA.md) | [nginx.conf.DA.example](nginx.conf.DA.example) |
 
 ## Sikkerhed
 
+- API- og loginkald afviser HTTP-redirects. Lad nginx videresende direkte til den endelige Pi-hole API-adresse med korrekt HTTP eller HTTPS.
 - Løsningen er beregnet til personlig brug eller personer, du har tillid til.
   Alle, der kan logge ind, får administratoradgang til de tilknyttede
   Pi-hole-installationer.
@@ -137,7 +183,7 @@ adgangskontrol foran det.
 
 - **v1.1.005:** Komplet dansk og engelsk brugerflade og dokumentation
 - **v1.2.006:** Understøttelse af to, tre eller fire Pi-hole-installationer
-- **v1.3.xxx:** Flere sprog
+- **v1.3.007:** Sprogmotoren genskrevet med keys, ekstra sprog findes i language.js
 - **v1.4.xxx:** Docker-image og forenklet installation
 
 Kontrolpanelet understøtter to til fire aktive installationer. Ekstra
@@ -145,8 +191,12 @@ installationer kræver både det tilsvarende antal i `index.html` og en proxy i 
 
 ## Bidrag
 
+**Udviklingssprog:** Kildekodekommentarer og HTML-grundtekster vedligeholdes på dansk. Oversættelseskatalogerne bevarer deres respektive sprog. Eksisterende funktionsnavne, API-felter og tekstnøgler bevares af hensyn til kompatibilitet.
+
 Issues og pull requests er velkomne. Bidrag kan blandt andet være fejlrettelser,
-forslag og senere oversættelser til flere sprog.
+forslag og oversættelser til flere sprog. Brug de samme meddelelsesnøgler og
+navngivne parametre i alle sprogkataloger, og medtag oversættelser af statisk
+tekst, dynamiske tilstande og tilgængelighedstekster.
 
 ## Licens
 

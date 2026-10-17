@@ -1,5 +1,5 @@
 /*
- * Valgfrie sprogbidrag til Dobbelt Pi-hole v1.3.007.
+ * Valgfrie sprogbidrag til Dobbelt Pi-hole v1.4.008.
  * Tysk oversættelse: Daniel Dietz.
  * Baseret på hans bidrag til den nøglebaserede sprogmotor, commit 4a32733.
  * Udgivet under projektets MIT-licens. Se LICENSE.

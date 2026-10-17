@@ -50,7 +50,28 @@ Chart.js indlæses som en separat lokal fil og bruges kun til graferne.
 - Et app password til hver Pi-hole. Det oprettes under **Settings → API** i den
   enkelte Pi-holes eget webinterface.
 
-## Opsætning
+### Installation med Docker
+
+Hent `compose.yml`, og læg den i en tom mappe. Tilpas adresser og navne til dine Pi-hole installationer. Vælg HTTP eller HTTPS efter din opsætning, og tilpas indstillingerne for certifikatkontrol.
+
+Åbn en terminal i mappen, og start dashboardet:
+
+```bash
+docker compose up -d
+```
+
+Docker henter automatisk det færdigbyggede image med dashboardet, nginx og Chart.js. Åbn derefter `http://DIN-SERVERS-IP:8080`.
+
+Opdater til det seneste image med:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+Se [Dockerprojektet](https://github.com/tursoe/Dobbelt-Pi-hole-Docker) for flere indstillinger og dokumentation.
+
+## Opsætning med nginx
 
 1. Kopiér `index.html` til den mappe, hvor nginx skal levere kontrolpanelet fra,
    eksempelvis `/srv/web/pihole-dashboard/index.html`.
@@ -184,7 +205,7 @@ adgangskontrol foran det.
 - **v1.1.005:** Komplet dansk og engelsk brugerflade og dokumentation
 - **v1.2.006:** Understøttelse af to, tre eller fire Pi-hole-installationer
 - **v1.3.007:** Sprogmotoren genskrevet med keys, ekstra sprog findes i language.js
-- **v1.4.xxx:** Docker-image og forenklet installation
+- **v1.4.008:** Docker-image og forenklet installation
 
 Kontrolpanelet understøtter to til fire aktive installationer. Ekstra
 installationer kræver både det tilsvarende antal i `index.html` og en proxy i nginx.

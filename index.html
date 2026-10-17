@@ -14,7 +14,7 @@
 			https://github.com/Daniel-Dietz/dobbelt-pi-hole
 			Arbejdet er tilpasset fra commit 4a327337a2db308ad33dcd3c4b47af723aa3d90d.
 
-			v1.3.007 — opdateret 2026-10-17
+			v1.4.008 — opdateret 2026-10-17
 			Dansk er udviklingssproget. Kildekommentarer og sidens grundtekster
 			vedligeholdes på dansk. Brugerfladen kan fortsat skifte sprog.
 			Dansk og engelsk er indbygget. Valgfrie sprogbidrag hentes fra language.js.
@@ -27,7 +27,7 @@
 		-->
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title data-i18n="app.title">Dobbelt-Pi-hole v1.3.007 · Kontrolpanel</title>
+		<title data-i18n="app.title">Dobbelt-Pi-hole v1.4.008 · Kontrolpanel</title>
 		<meta name="description" data-i18n-content="app.description" content="Et samlet kontrolpanel til to, tre eller fire Pi-hole v6-instanser.">
 		<style>
 			:root {
@@ -871,15 +871,10 @@
 				</h1>
 				<div class="topbar-actions">
 					<select class="language-select" id="languageSelect" data-i18n-aria-label="app.language" data-i18n-title="app.language" aria-label="Sprog" title="Sprog">
-						<option value="da" lang="da">
-							Dansk
-						</option>
-						<option value="en" lang="en">
-							English
-						</option>
+						<option value="da" lang="da">Dansk</option>
+						<option value="en" lang="en">English</option>
 					</select>
-					<span class="sub" id="languageCredit">
-					</span>
+					<span class="sub" id="languageCredit"></span>
 					<button class="theme-toggle" id="themeToggle" data-i18n-aria-label="app.themeToggle" data-i18n-title="app.themeToggle" aria-label="Skift mellem lys og m&oslash;rk tilstand" title="Skift mellem lys og m&oslash;rk tilstand">
 						<span class="theme-toggle-knob">
 							<svg class="icon-sun" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -895,20 +890,14 @@
 					</button>
 				</div>
 			</div>
-			<div class="pills" id="serverPills">
-			</div>
+			<div class="pills" id="serverPills"></div>
 		</header>
-		<nav class="tabs" id="tabs">
-		</nav>
-		<main id="tabContent">
-		</main>
-		<div class="toast-area" id="toastArea" role="status" aria-live="polite" aria-atomic="false">
-		</div>
-		<script src="chart.umd.min.js">
-		</script>
+		<nav class="tabs" id="tabs"></nav>
+		<main id="tabContent"></main>
+		<div class="toast-area" id="toastArea" role="status" aria-live="polite" aria-atomic="false"></div>
+		<script src="chart.umd.min.js"></script>
 		<!-- Valgfrie sprogbidrag. Kontrolpanelet fungerer også uden denne fil. -->
-		<script src="language.js">
-		</script>
+		<script src="language.js"></script>
 		<script>
 			"use strict";
 
@@ -1467,7 +1456,7 @@
 			};
 
 			/* Indbyggede sprog og sprogbidrag bruger samme nøgler og parametre som almindelig tekst. */
-			const APP_VERSION = "1.3.007";
+			const APP_VERSION = "1.4.008";
 			const LANGUAGE_KEY = "ph_combo_language";
 			/** Registrér komplette, valgfrie sprogbidrag uden at ændre de indbyggede sprog. */
 			function availableLanguages(additions = window.PIHOLE_LANGUAGES) {

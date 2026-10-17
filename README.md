@@ -50,7 +50,28 @@ Chart.js is loaded as a separate local file and is only used for charts.
 - An app password for each Pi-hole. Create it under **Settings → API** in each
   Pi-hole's own web interface.
 
-## Setup
+### Installation with Docker
+
+Download `compose.yml` and place it in an empty directory. Set the addresses and display names for your Pi-hole instances. Choose HTTP or HTTPS to match your setup and adjust the certificate verification settings.
+
+Open a terminal in that directory and start the dashboard:
+
+```bash
+docker compose up -d
+```
+
+Docker automatically downloads the prebuilt image containing the dashboard, nginx and Chart.js. Then open `http://YOUR-SERVER-IP:8080`.
+
+Update to the latest image with:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+See the [Docker project](https://github.com/tursoe/Dobbelt-Pi-hole-Docker) for additional settings and documentation.
+
+## Setup with nginx
 
 1. Copy `index.html` to the directory served by nginx, for example
    `/srv/web/pihole-dashboard/index.html`.
@@ -186,7 +207,7 @@ access control in front of it.
 - **v1.1.005:** Complete Danish and English interfaces and documentation
 - **v1.2.006:** Support for two, three or four Pi-hole instances
 - **v1.3.007:** Language engine rewritten to use message keys, with additional languages in language.js
-- **v1.4.xxx:** Docker image and simplified installation
+- **v1.4.008:** Docker image and simplified installation
 
 The dashboard supports two to four active instances. Additional instances
 require both the matching server count in `index.html` and a proxy route in nginx.

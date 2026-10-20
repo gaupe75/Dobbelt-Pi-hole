@@ -17,7 +17,7 @@ Kontrolpanelet indeholder:
 - Administration af adlists
 - Gravity-opdatering på hver installation med tidspunktet for seneste opdatering
 - Handlinger, der kan udføres på én eller alle aktive installationer
-- Dansk og engelsk brugerflade
+- Dansk, norsk bokmål, nynorsk og engelsk brugerflade
 
 Pi-hole-installationerne forbliver selvstændige DNS-servere. Projektet
 opretter ikke failover, virtuel IP, primær eller sekundær server eller automatisk
@@ -132,10 +132,13 @@ netop den browser. Antallet og API-stierne kan ikke ændres under Indstillinger.
 
 ## Sprog
 
-Brugerfladen findes på **English** og **Dansk**.
+Brugerfladen findes på **English**, **Dansk**, **norsk bokmål** og **nynorsk**.
 Sprogvælgeren øverst i kontrolpanelet ændrer straks brugerfladen, herunder
 dialogtekster, dynamiske meddelelser, tabeller og grafer. Tal, procenttal,
 datoer og klokkeslæt følger det valgte sprog.
+
+Roy-Magne Mo har bidraget med norsk bokmål og nynorsk, baseret på commit
+`8e90275`. Hans navn vises ved sprogvælgeren, når et af de norske sprog er valgt.
 
 Det indledende sprog vælges i denne rækkefølge:
 
@@ -145,10 +148,10 @@ Det indledende sprog vælges i denne rækkefølge:
    Regionale varianter som `de-DE`, `de-AT`, `en-GB` og `da-DK` understøttes.
 3. Engelsk, hvis der ikke findes et understøttet sprog.
 
-Dansk og engelsk er indbygget i `index.html`. Den valgfrie [language.js](language.js)
+Dansk, engelsk, bokmål og nynorsk er indbygget i `index.html`. Den valgfrie [language.js](language.js)
 tilføjer tysk og kan registrere flere sprogbidrag. Læg filen ved siden af
 `index.html` for at aktivere dem. Mangler filen, eller kan den ikke indlæses,
-fortsætter kontrolpanelet med dansk og engelsk. Sprog, der ikke er tilgængelige,
+fortsætter kontrolpanelet med de indbyggede sprog. Sprog, der ikke er tilgængelige,
 udelades fra sproglisten. Et gemt sprog, som mangler, falder tilbage til et
 understøttet browsersprog og derefter engelsk.
 
@@ -156,7 +159,7 @@ Hvert sprog i `window.PIHOLE_LANGUAGES` angiver `label` (sprogets eget navn),
 `locale`, `author` og `messages`. Kopiér hele det engelske katalog fra `I18N.en`
 i `index.html`, oversæt værdierne og bevar alle nøgler og navngivne parametre.
 Komplette, gyldige bidrag tilføjes automatisk. Ufuldstændige eller ugyldige
-bidrag springes over. Filen kan ikke erstatte indbygget dansk og engelsk.
+bidrag springes over. Filen kan ikke erstatte de indbyggede sprog.
 Opdatér `index.html` og `language.js` sammen, når tekstnøglerne ændres.
 
 Brug [language.template.js](language.template.js) som skabelon til et nyt sprog.
@@ -206,6 +209,7 @@ adgangskontrol foran det.
 - **v1.2.006:** Understøttelse af to, tre eller fire Pi-hole-installationer
 - **v1.3.007:** Sprogmotoren genskrevet med keys, ekstra sprog findes i language.js
 - **v1.4.008:** Docker-image og forenklet installation
+- **v1.4.010:** Tilføjet norsk bokmål og nynorsk samt forberedt versionskontrol til Docker udgaven. Tidsvalg i forespørgselsloggen er begrænset til 1, 6 og 24 timer.
 
 Kontrolpanelet understøtter to til fire aktive installationer. Ekstra
 installationer kræver både det tilsvarende antal i `index.html` og en proxy i nginx.

@@ -17,7 +17,7 @@ The dashboard includes:
 - Adlist management
 - Gravity updates on each instance, including the time of the last update
 - Actions that can be applied to one or all active instances
-- Danish and English user interfaces
+- Danish, English, Norwegian Bokmål and Nynorsk user interfaces
 
 The Pi-hole instances remain independent DNS servers. This project does not
 provide failover, a virtual IP address, a primary or secondary server, or
@@ -134,10 +134,14 @@ names.
 
 ## Languages
 
-The user interface is available in **English** and **Dansk**.
+The user interface is available in **English**, **Dansk**, **Norwegian Bokmål** and **Nynorsk**.
 The language selector at the top of the dashboard changes the interface
 immediately, including dialog text, dynamic messages, tables and charts.
 Numbers, percentages, dates and times follow the selected language.
+
+Roy-Magne Mo contributed the Norwegian Bokmål and Nynorsk translations,
+based on commit `8e90275`. His name appears beside the language selector
+when either Norwegian language is selected.
 
 The initial language is selected in this order:
 
@@ -147,10 +151,10 @@ The initial language is selected in this order:
    Regional variants such as `de-DE`, `de-AT`, `en-GB` and `da-DK` are supported.
 3. English if no supported language is found.
 
-Danish and English are built into `index.html`. The optional [language.js](language.js)
+Danish, English, Norwegian Bokmål and Nynorsk are built into `index.html`. The optional [language.js](language.js)
 adds German and can register further contributed languages. Place it beside
 `index.html` to enable them. If the file is missing or cannot be loaded, the
-dashboard continues with Danish and English. Unavailable languages are omitted
+dashboard continues with the built-in languages. Unavailable languages are omitted
 from the selector. An unavailable saved language falls back to a supported
 browser language, then English.
 
@@ -158,8 +162,7 @@ Each language in `window.PIHOLE_LANGUAGES` supplies `label` (the language's nati
 name), `locale`, `author` and `messages`. Copy the complete English catalog from
 `I18N.en` in `index.html`, translate the values and retain every key and named
 parameter. Complete, valid contributions are added automatically. Incomplete
-or invalid contributions are skipped. This file cannot replace the built-in
-Danish and English languages. Update `index.html` and `language.js` together
+or invalid contributions are skipped. This file cannot replace the built-in languages. Update `index.html` and `language.js` together
 when message keys change.
 
 Use [language.template.js](language.template.js) as the template for a new language.
@@ -208,6 +211,8 @@ access control in front of it.
 - **v1.2.006:** Support for two, three or four Pi-hole instances
 - **v1.3.007:** Language engine rewritten to use message keys, with additional languages in language.js
 - **v1.4.008:** Docker image and simplified installation
+- **v1.4.010:** Added Norwegian Bokmål and Nynorsk and prepared update checking for Docker installations. Query log time ranges are now limited to 1, 6 and 24 hours.
+
 
 The dashboard supports two to four active instances. Additional instances
 require both the matching server count in `index.html` and a proxy route in nginx.

@@ -14,10 +14,17 @@
 			https://github.com/Daniel-Dietz/dobbelt-pi-hole
 			Arbejdet er tilpasset fra commit 4a327337a2db308ad33dcd3c4b47af723aa3d90d.
 
-			v1.4.008 — opdateret 2026-10-17
+			Norsk bokmål og nynorsk er oversat af Roy-Magne Mo.
+			Arbejdet er tilpasset fra commit 8e90275e9ba86c8f70af5d2460469f5c389ecde0.
+
+			v1.4.010 — opdateret 2026-10-20
 			Dansk er udviklingssproget. Kildekommentarer og sidens grundtekster
 			vedligeholdes på dansk. Brugerfladen kan fortsat skifte sprog.
-			Dansk og engelsk er indbygget. Valgfrie sprogbidrag hentes fra language.js.
+
+			De indbyggede sprog har fokus på Norden. Foreløbig er dansk,
+			norsk bokmål og nynorsk indbygget sammen med engelsk,
+			der også bruges som fallback ved manglende oversættelser.
+			Valgfrie sprogbidrag hentes fra language.js.
 			Mangler filen, eller er et bidrag ugyldigt, fungerer de indbyggede sprog stadig.
 			Chart.js hentes separat. Se README.DA.md og bibliotekets egen licens.
 
@@ -27,7 +34,7 @@
 		-->
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title data-i18n="app.title">Dobbelt-Pi-hole v1.4.008 · Kontrolpanel</title>
+		<title data-i18n="app.title">Dobbelt-Pi-hole v1.4.010 · Kontrolpanel</title>
 		<meta name="description" data-i18n-content="app.description" content="Et samlet kontrolpanel til to, tre eller fire Pi-hole v6-instanser.">
 		<style>
 			:root {
@@ -197,7 +204,7 @@
 				padding: 0;
 				position: relative;
 				flex: none;
-				background: #0d1520;
+				background: #40464e; /* #0d1520 */
 				transition: background .25s ease
 			}
 
@@ -858,7 +865,17 @@
 			.kv .k {
 				color: var(--muted)
 			}
-		</style>
+		
+            .update-dot {
+                display: inline-block;
+                width: 9px;
+                height: 9px;
+                margin-left: 7px;
+                border-radius: 50%;
+                background: #e05252;
+                vertical-align: middle;
+            }
+        </style>
 	</head>
 	<body>
 		<header class="topbar">
@@ -954,6 +971,11 @@
 			/* ---------------- Nøglebaserede oversættelser ---------------- */
 			const I18N = {
 				"da": {
+					"updates.checking": "Søger efter opdateringer…",
+					"updates.current": "Ingen nyere version fundet. Installeret: v{current}.",
+					"updates.available": "Ny version tilgængelig: v{latest}. Installeret: v{current}.",
+					"updates.releases": "Se udgivelser",
+					"updates.error": "Kunne ikke tjekke for opdateringer.",
 					"app.title": "Dobbelt-Pi-hole v{version} · Kontrolpanel",
 					"app.description": "Et samlet kontrolpanel til to, tre eller fire Pi-hole v6-instanser.",
 					"app.headingSuffix": "· kontrolpanel",
@@ -1204,6 +1226,11 @@
 					"common.languageCredit": "Oversættelse: {author}"
 				},
 				"en": {
+					"updates.checking": "Checking for updates…",
+					"updates.current": "No newer version found. Installed: v{current}.",
+					"updates.available": "New version available: v{latest}. Installed: v{current}.",
+					"updates.releases": "View releases",
+					"updates.error": "Could not check for updates.",
 					"app.title": "Dobbelt-Pi-hole v{version} · Dashboard",
 					"app.description": "A combined dashboard for two, three or four Pi-hole v6 instances.",
 					"app.headingSuffix": "· dashboard",
@@ -1454,6 +1481,11 @@
 					"common.languageCredit": "Translation: {author}"
 				},
 				"nn": {
+					"updates.checking": "Ser etter oppdateringar…",
+					"updates.current": "Ingen nyare versjon funnen. Installert: v{current}.",
+					"updates.available": "Ny versjon tilgjengeleg: v{latest}. Installert: v{current}.",
+					"updates.releases": "Sjå utgjevingar",
+					"updates.error": "Kunne ikkje sjå etter oppdateringar.",
 					"app.title": "Dobbelt-Pi-hole v{version} · Dashbord",
 					"app.description": "Eit samla dashbord for to, tre eller fire Pi-hole v6-instansar.",
 					"app.headingSuffix": "· dashbord",
@@ -1704,6 +1736,11 @@
 					"common.languageCredit": "Omsetjing: {author}"
 				},
 				"nb": {
+					"updates.checking": "Ser etter oppdateringer…",
+					"updates.current": "Ingen nyere versjon funnet. Installert: v{current}.",
+					"updates.available": "Ny versjon tilgjengelig: v{latest}. Installert: v{current}.",
+					"updates.releases": "Se utgivelser",
+					"updates.error": "Kunne ikke se etter oppdateringer.",
 					"app.title": "Dobbelt-Pi-hole v{version} · Dashbord",
 					"app.description": "Et samlet dashbord for to, tre eller fire Pi-hole v6-instanser.",
 					"app.headingSuffix": "· dashbord",
@@ -1956,15 +1993,106 @@
 			};
 
 			/* Indbyggede sprog og sprogbidrag bruger samme nøgler og parametre som almindelig tekst. */
-			const APP_VERSION = "1.4.008";
+			const APP_VERSION = "1.4.010";
+
+			/* Versionstjek: version.js indeholder kun fx v1.4.010, aldrig eksekverbar kode.
+			 * /versioncheck/ skal proxys via nginx. Ingen Pi-hole loginoplysninger sendes.
+			 * Tekster vedligeholdes i I18N sammen med resten af brugerfladen. */
+
+			// Sæt kun til true i Docker udgaven. Almindelig download bruger false.
+			const DOCKER_INSTALLATION = false;
+			const VERSION_SESSION_KEY = "ph_versioncheck_" + APP_VERSION;
+			const versionCheckState = {status: "idle", latest: null};
+			function parseReleaseVersion(value) {
+				const match = /^v?(\d{1,9})\.(\d{1,9})\.(\d{1,9})$/u.exec(String(value).trim());
+				return match ? match.slice(1).map(Number) : null;
+			}
+			function isNewerRelease(latest, current) {
+				for (let i = 0; i < 3; i++) {
+					if (latest[i] !== current[i]) return latest[i] > current[i];
+				}
+				return false;
+			}
+			function hasAvailableUpdate() {
+				if (!DOCKER_INSTALLATION) return false;
+				const latest = parseReleaseVersion(versionCheckState.latest || "");
+				return latest !== null && isNewerRelease(latest, parseReleaseVersion(APP_VERSION));
+			}
+			function updateBadgeHtml() {
+				if (!hasAvailableUpdate()) return "";
+				const label = msg("updates.available", {latest: versionCheckState.latest, current: APP_VERSION});
+				return `<span class="update-dot" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}"></span>`;
+			}
+			function renderVersionCheck() {
+				const settingsButton = document.querySelector('#tabs button[data-tab="settings"]');
+				if (settingsButton) settingsButton.innerHTML = htmlMsg("tabs.settings") + updateBadgeHtml();
+				const area = document.getElementById("versionCheckStatus");
+				if (!area) return;
+				area.hidden = !DOCKER_INSTALLATION;
+				if (!DOCKER_INSTALLATION) {area.replaceChildren(); return;}
+				area.replaceChildren();
+				const status = versionCheckState.status === "idle" ? "checking" : versionCheckState.status;
+				area.textContent = msg("updates." + (status === "update" ? "available" : status), {current: APP_VERSION, latest: versionCheckState.latest || ""});
+				if (hasAvailableUpdate()) {
+					const link = document.createElement("a");
+					link.href = "https://github.com/tursoe/Dobbelt-Pi-hole/releases";
+					link.target = "_blank";
+					link.rel = "noopener noreferrer";
+					link.textContent = msg("updates.releases");
+					area.append(" ", link);
+				}
+			}
+			async function checkForUpdates() {
+				if (!DOCKER_INSTALLATION) return;
+				if (versionCheckState.status === "checking") return;
+				versionCheckState.status = "checking";
+				// Gem også forsøget: genindlæsning i samme session udløser ikke nye kald.
+				storeValue(VERSION_SESSION_KEY, JSON.stringify({status: "error", latest: versionCheckState.latest}), "sessionStorage");
+				renderVersionCheck();
+				const controller = new AbortController();
+				const timeout = setTimeout(() => controller.abort(), 8000);
+				try {
+					const response = await fetch("/versioncheck/", {
+						cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: controller.signal
+					});
+					if (!response.ok) throw new Error("Version endpoint HTTP " + response.status);
+					const raw = (await response.text()).trim();
+					const latest = parseReleaseVersion(raw);
+					const current = parseReleaseVersion(APP_VERSION);
+					if (!latest || !current) throw new Error("Invalid release version");
+					versionCheckState.latest = raw.replace(/^v/u, "");
+					versionCheckState.status = isNewerRelease(latest, current) ? "update" : "current";
+				} catch {
+					versionCheckState.status = "error";
+				} finally {
+					clearTimeout(timeout);
+					storeValue(VERSION_SESSION_KEY, JSON.stringify(versionCheckState), "sessionStorage");
+					renderVersionCheck();
+				}
+			}
+			function initVersionCheck() {
+				if (!DOCKER_INSTALLATION) return;
+				try {
+					const cached = JSON.parse(storedValue(VERSION_SESSION_KEY, "sessionStorage") || "null");
+					if (cached && ["current", "update", "error"].includes(cached.status)
+						&& (cached.latest === null || parseReleaseVersion(cached.latest))) {
+						versionCheckState.latest = cached.latest;
+						versionCheckState.status = cached.status;
+						renderVersionCheck();
+						return;
+					}
+				} catch { /* Ugyldig eller utilgængelig sessionslagring: tjek ved åbning. */ }
+				void checkForUpdates();
+			}
+
 			const LANGUAGE_KEY = "ph_combo_language";
 			/** Registrér komplette, valgfrie sprogbidrag uden at ændre de indbyggede sprog. */
 			function availableLanguages(additions = window.PIHOLE_LANGUAGES) {
 				const languages = {
 					da: {label: "Dansk", locale: "da-DK"},
 					en: {label: "English", locale: "en-GB"},
-					nn: {label: "Norsk nynorsk", locale: "nn-NO"},
-					nb: {label: "Norsk bokmål", locale: "nb-NO"}
+					nn: {label: "Norsk nynorsk", locale: "nn-NO", author: "Roy-Magne Mo"},
+					nb: {label: "Norsk bokmål", locale: "nb-NO", author: "Roy-Magne Mo"}
 				};
 				if (!additions || typeof additions !== "object" || Array.isArray(additions)) return languages;
 				const keys = Object.keys(I18N.en);
@@ -1978,9 +2106,10 @@
 						new Intl.DateTimeFormat(pack.locale);
 						new Intl.PluralRules(pack.locale);
 					} catch {continue;}
-					if (Object.keys(pack.messages).length !== keys.length || !keys.every(key =>
-						Object.hasOwn(pack.messages, key) && typeof pack.messages[key] === "string"
-						&& pack.messages[key].trim()
+					// Ældre sprogpakker må mangle updates.*; msg() bruger da engelsk fallback.
+					if (Object.keys(pack.messages).some(key => !Object.hasOwn(I18N.en, key)) || !keys.every(key =>
+						!Object.hasOwn(pack.messages, key) ? key.startsWith("updates.")
+						: typeof pack.messages[key] === "string" && pack.messages[key].trim()
 						&& parameters(pack.messages[key]) === parameters(I18N.en[key]))) continue;
 					I18N[code] = {...pack.messages};
 					languages[code] = {
@@ -2175,6 +2304,7 @@
 				if (select) select.value = code;
 				applyI18n();
 				updateLanguageCredit();
+				renderVersionCheck();
 				renderTabs();
 				renderPills();
 				if (rerender && state.activeTab) {
@@ -2203,6 +2333,7 @@
 				document.documentElement.lang = currentLanguage;
 				applyI18n();
 				updateLanguageCredit();
+				renderVersionCheck();
 			}
 
 			function uiConfirm(message) {return window.confirm(message);}
@@ -2489,7 +2620,7 @@
 			}
 			function renderTabs() {
 				const t = document.getElementById("tabs");
-				t.innerHTML = TABS.map(([t, e]) => `<button data-tab="${t}" class="${state.activeTab === t ? "active" : ""}">${htmlMsg(e)}</button>`).join("");
+				t.innerHTML = TABS.map(([t, e]) => `<button data-tab="${t}" class="${state.activeTab === t ? "active" : ""}">${htmlMsg(e)}${t === "settings" ? updateBadgeHtml() : ""}</button>`).join("");
 				for (const e of t.querySelectorAll("button")) e.addEventListener("click", () => switchTab(e.dataset.tab));
 			}
 			function renderPills() {
@@ -2872,7 +3003,7 @@
 				}
 			}
 			async function renderQueries(t, e) {
-				t.innerHTML = `\n\t\t\t\t<div class="card">\n\t\t\t\t<div class="flex-between" style="margin-bottom:12px;flex-wrap:wrap;">\n\t\t\t\t\t<div class="row-inline">\n\t\t\t\t\t<label class="field" style="min-width:150px;"><span>${htmlMsg("queries.timeRange")}</span>\n\t\t\t\t\t\t<select id="qRange">\n\t\t\t\t\t\t<option value="1">${escapeHtml(msgCount("queries.rangeHours", 1))}</option>\n\t\t\t\t\t\t<option value="6" selected>${escapeHtml(msgCount("queries.rangeHours", 6))}</option>\n\t\t\t\t\t\t<option value="24">${escapeHtml(msgCount("queries.rangeHours", 24))}</option>\n\t\t\t\t\t\t<option value="72">${escapeHtml(msgCount("queries.rangeDays", 3))}</option>\n\t\t\t\t\t\t<option value="168">${escapeHtml(msgCount("queries.rangeDays", 7))}</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:170px;"><span>${htmlMsg("queries.domainClientFilter")}</span>\n\t\t\t\t\t\t<input type="text" id="qFilter" placeholder="${htmlMsg("queries.domainClientPlaceholder")}">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:120px;"><span>${htmlMsg("queries.server")}</span>\n\t\t\t\t\t\t<select id="qServerFilter">\n\t\t\t\t\t\t<option value="all">${htmlMsg("queries.all")}</option>\n\t\t\t\t\t\t${state.servers.map(t => `<option value="${t.id}">${escapeHtml(t.label)}</option>`).join("")}\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:180px;"><span>${htmlMsg("queries.client")}</span>\n\t\t\t\t\t\t<select id="qClientFilter"><option value="all">${htmlMsg("queries.allClients")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.type")}</span>\n\t\t\t\t\t\t<select id="qTypeFilter"><option value="all">${htmlMsg("queries.allTypes")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.pageSize")}</span>\n\t\t\t\t\t\t<select id="qPageSize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="250">250</option><option value="all">${htmlMsg("queries.all")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<button class="btn primary" id="qReload">${htmlMsg("queries.reload")}</button>\n\t\t\t\t</div>\n\t\t\t\t<p class="sub" id="qStatus"></p>\n\t\t\t\t<div id="qArea"><p class="empty">${htmlMsg("queries.loading")}</p></div>\n\t\t\t\t</div>`;
+				t.innerHTML = `\n\t\t\t\t<div class="card">\n\t\t\t\t<div class="flex-between" style="margin-bottom:12px;flex-wrap:wrap;">\n\t\t\t\t\t<div class="row-inline">\n\t\t\t\t\t<label class="field" style="min-width:150px;"><span>${htmlMsg("queries.timeRange")}</span>\n\t\t\t\t\t\t<select id="qRange">\n\t\t\t\t\t\t<option value="1">${escapeHtml(msgCount("queries.rangeHours", 1))}</option>\n\t\t\t\t\t\t<option value="6" selected>${escapeHtml(msgCount("queries.rangeHours", 6))}</option>\n\t\t\t\t\t\t<option value="24">${escapeHtml(msgCount("queries.rangeHours", 24))}</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:170px;"><span>${htmlMsg("queries.domainClientFilter")}</span>\n\t\t\t\t\t\t<input type="text" id="qFilter" placeholder="${htmlMsg("queries.domainClientPlaceholder")}">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:120px;"><span>${htmlMsg("queries.server")}</span>\n\t\t\t\t\t\t<select id="qServerFilter">\n\t\t\t\t\t\t<option value="all">${htmlMsg("queries.all")}</option>\n\t\t\t\t\t\t${state.servers.map(t => `<option value="${t.id}">${escapeHtml(t.label)}</option>`).join("")}\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:180px;"><span>${htmlMsg("queries.client")}</span>\n\t\t\t\t\t\t<select id="qClientFilter"><option value="all">${htmlMsg("queries.allClients")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.type")}</span>\n\t\t\t\t\t\t<select id="qTypeFilter"><option value="all">${htmlMsg("queries.allTypes")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.pageSize")}</span>\n\t\t\t\t\t\t<select id="qPageSize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="250">250</option><option value="all">${htmlMsg("queries.all")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<button class="btn primary" id="qReload">${htmlMsg("queries.reload")}</button>\n\t\t\t\t</div>\n\t\t\t\t<p class="sub" id="qStatus"></p>\n\t\t\t\t<div id="qArea"><p class="empty">${htmlMsg("queries.loading")}</p></div>\n\t\t\t\t</div>`;
 				const n = uiState.queries;
 				state.servers.some(t => t.id === n.server) || (n.server = "all"), document.getElementById("qRange").value = n.range, document.getElementById("qFilter").value = n.filter, document.getElementById("qServerFilter").value = n.server, document.getElementById("qPageSize").value = n.pageSize;
 				await refreshClientNames();
@@ -3810,6 +3941,7 @@
 			</details>
 			<div class="card">
 				<h2>${htmlMsg("settings.title")}</h2>
+				${DOCKER_INSTALLATION ? '<p class="sub" id="versionCheckStatus" role="status" aria-live="polite"></p>' : ""}
 				<form id="settingsForm">
 					<p class="sub">${htmlMsg("settings.namesHelp")}</p>
 					${state.servers.map(server => `<div class="row-inline" style="margin-bottom:10px;">
@@ -3818,6 +3950,8 @@
 					<button class="btn primary" type="submit">${htmlMsg("settings.save")}</button>
 				</form>
 			</div>`;
+				renderVersionCheck();
+				void checkForUpdates();
 				document.getElementById("settingsForm").addEventListener("submit", async event => {
 					event.preventDefault();
 					for (const input of t.querySelectorAll("[data-label]")) {
@@ -3847,7 +3981,7 @@
 				});
 			}
 			async function bootstrap() {
-				initI18n(), initThemeToggle(), state.activeTab = tabFromHash(), renderPills(), await Promise.all(state.servers.map(checkSession)), renderPills(), await switchTab(state.activeTab);
+				initI18n(), initThemeToggle(), initVersionCheck(), state.activeTab = tabFromHash(), renderPills(), await Promise.all(state.servers.map(checkSession)), renderPills(), await switchTab(state.activeTab);
 			}
 			// Start kontrolpanelet.
 			window.addEventListener("hashchange", () => {

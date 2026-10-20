@@ -14,10 +14,17 @@
 			https://github.com/Daniel-Dietz/dobbelt-pi-hole
 			Arbejdet er tilpasset fra commit 4a327337a2db308ad33dcd3c4b47af723aa3d90d.
 
-			v1.4.008 — opdateret 2026-10-17
+			Norsk bokmål og nynorsk er oversat af Roy-Magne Mo.
+			Arbejdet er tilpasset fra commit 8e90275e9ba86c8f70af5d2460469f5c389ecde0.
+
+			v1.4.010 — opdateret 2026-10-20
 			Dansk er udviklingssproget. Kildekommentarer og sidens grundtekster
 			vedligeholdes på dansk. Brugerfladen kan fortsat skifte sprog.
-			Dansk og engelsk er indbygget. Valgfrie sprogbidrag hentes fra language.js.
+
+			De indbyggede sprog har fokus på Norden. Foreløbig er dansk,
+			norsk bokmål og nynorsk indbygget sammen med engelsk,
+			der også bruges som fallback ved manglende oversættelser.
+			Valgfrie sprogbidrag hentes fra language.js.
 			Mangler filen, eller er et bidrag ugyldigt, fungerer de indbyggede sprog stadig.
 			Chart.js hentes separat. Se README.DA.md og bibliotekets egen licens.
 
@@ -27,7 +34,7 @@
 		-->
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title data-i18n="app.title">Dobbelt-Pi-hole v1.4.008 · Kontrolpanel</title>
+		<title data-i18n="app.title">Dobbelt-Pi-hole v1.4.010 · Kontrolpanel</title>
 		<meta name="description" data-i18n-content="app.description" content="Et samlet kontrolpanel til to, tre eller fire Pi-hole v6-instanser.">
 		<style>
 			:root {
@@ -197,7 +204,7 @@
 				padding: 0;
 				position: relative;
 				flex: none;
-				background: #0d1520;
+				background: #40464e; /* #0d1520 */
 				transition: background .25s ease
 			}
 
@@ -858,7 +865,17 @@
 			.kv .k {
 				color: var(--muted)
 			}
-		</style>
+		
+            .update-dot {
+                display: inline-block;
+                width: 9px;
+                height: 9px;
+                margin-left: 7px;
+                border-radius: 50%;
+                background: #e05252;
+                vertical-align: middle;
+            }
+        </style>
 	</head>
 	<body>
 		<header class="topbar">
@@ -954,6 +971,11 @@
 			/* ---------------- Nøglebaserede oversættelser ---------------- */
 			const I18N = {
 				"da": {
+					"updates.checking": "Søger efter opdateringer…",
+					"updates.current": "Ingen nyere version fundet. Installeret: v{current}.",
+					"updates.available": "Ny version tilgængelig: v{latest}. Installeret: v{current}.",
+					"updates.releases": "Se udgivelser",
+					"updates.error": "Kunne ikke tjekke for opdateringer.",
 					"app.title": "Dobbelt-Pi-hole v{version} · Kontrolpanel",
 					"app.description": "Et samlet kontrolpanel til to, tre eller fire Pi-hole v6-instanser.",
 					"app.headingSuffix": "· kontrolpanel",
@@ -1204,6 +1226,11 @@
 					"common.languageCredit": "Oversættelse: {author}"
 				},
 				"en": {
+					"updates.checking": "Checking for updates…",
+					"updates.current": "No newer version found. Installed: v{current}.",
+					"updates.available": "New version available: v{latest}. Installed: v{current}.",
+					"updates.releases": "View releases",
+					"updates.error": "Could not check for updates.",
 					"app.title": "Dobbelt-Pi-hole v{version} · Dashboard",
 					"app.description": "A combined dashboard for two, three or four Pi-hole v6 instances.",
 					"app.headingSuffix": "· dashboard",
@@ -1452,17 +1479,620 @@
 					"lists.requestError": "{server}: {error}",
 					"common.networkError": "The connection to the Pi-hole API failed. Check the network and proxy configuration. HTTP redirects are not accepted.",
 					"common.languageCredit": "Translation: {author}"
+				},
+				"nn": {
+					"updates.checking": "Ser etter oppdateringar…",
+					"updates.current": "Ingen nyare versjon funnen. Installert: v{current}.",
+					"updates.available": "Ny versjon tilgjengeleg: v{latest}. Installert: v{current}.",
+					"updates.releases": "Sjå utgjevingar",
+					"updates.error": "Kunne ikkje sjå etter oppdateringar.",
+					"app.title": "Dobbelt-Pi-hole v{version} · Dashbord",
+					"app.description": "Eit samla dashbord for to, tre eller fire Pi-hole v6-instansar.",
+					"app.headingSuffix": "· dashbord",
+					"app.language": "Språk",
+					"app.themeToggle": "Bytt mellom lys og mørk modus",
+					"tabs.dashboard": "Dashbord",
+					"tabs.queries": "Førespurnader",
+					"tabs.domains": "Domene",
+					"tabs.hosts": "Lokal DNS",
+					"tabs.clients": "Klientar",
+					"tabs.lists": "Lister",
+					"tabs.gravity": "Gravity",
+					"tabs.settings": "Innstillingar",
+					"common.loading": "Lastar…",
+					"common.never": "aldri",
+					"common.error": "Det oppstod ein feil: {error}",
+					"common.serverError": "{server}: {error}",
+					"common.both": "Begge",
+					"common.all": "Alle",
+					"auth.checking": "kontrollerer…",
+					"auth.connected": "tilkopla",
+					"auth.notConnected": "ikkje innlogga",
+					"auth.notConnectedOn": "Ikkje innlogga på {server}",
+					"auth.login": "Logg inn",
+					"auth.logout": "Logg ut",
+					"auth.password": "Passord / appassord",
+					"auth.passwordFor": "Passord / appassord for {server}",
+					"auth.loginFailed": "Innlogginga feila",
+					"auth.loggedIn": "Logga inn på {server}",
+					"auth.loggedOut": "Logga ut frå {server}",
+					"pagination.showing": "Viser {shown} av {total}",
+					"pagination.previous": "‹ Førre",
+					"pagination.next": "Neste ›",
+					"pagination.page": "Side {page} / {pages}",
+					"dashboard.notLoggedIn": "Ikkje innlogga.",
+					"dashboard.statusUnavailable": "Klarte ikkje laste status.",
+					"dashboard.blockingEnabled": "blokkerer",
+					"dashboard.blockingDisabled": "slått av",
+					"dashboard.queriesToday.one": "førespurnad i dag",
+					"dashboard.queriesToday.other": "førespurnader i dag",
+					"dashboard.blocked": "Blokkerte",
+					"dashboard.blocklistDomains": "Domene på blokkeringslista",
+					"dashboard.clients": "Klientar",
+					"dashboard.clientsSummary.one": "{count} aktiv / {total} totalt",
+					"dashboard.clientsSummary.other": "{count} aktive / {total} totalt",
+					"dashboard.gravityUpdated": "Siste Gravity-oppdatering",
+					"dashboard.disableBlocking": "Slå av blokkering",
+					"dashboard.enableBlocking": "Slå på blokkering",
+					"dashboard.logout": "Logg ut",
+					"dashboard.total": "SAMLA",
+					"dashboard.totalQueriesToday.one": "førespurnad i dag (alle aktive tenarar)",
+					"dashboard.totalQueriesToday.other": "førespurnader i dag (alle aktive tenarar)",
+					"dashboard.blockedTotal": "Totalt blokkert",
+					"dashboard.blockedPercent": "Blokkert %",
+					"dashboard.totalHint": "Desse tala er summen av alle aktive Pi-hole-instansar. Bruk fana Gravity for å oppdatere blokkeringslister og fana Førespurnader for ein samla logg.",
+					"dashboard.blockingEnabledToast": "{server}: blokkering slått på",
+					"dashboard.blockingDisabledToast": "{server}: blokkering slått av",
+					"dashboard.serverError": "{server}: {error}",
+					"dashboard.noData": "Ingen data.",
+					"dashboard.details": "detaljar",
+					"dashboard.topAllowedDomains": "Mest tillatne domene",
+					"dashboard.topBlockedDomains": "Mest blokkerte domene",
+					"dashboard.topClients": "Mest aktive klientar",
+					"charts.queryTypes": "Førespurnadstypar",
+					"charts.libraryUnavailable": "Diagrambiblioteket (Chart.js) kunne ikkje lastast frå den lokale fila {chartFile}. Sjekk at fila ligg i same mappe som {pageFile} på tenaren, og at nginx kan lese ho. Resten av dashbordet fungerer som vanleg.",
+					"charts.queriesOverTime": "Førespurnader over tid",
+					"charts.clientActivityOverTime": "Klientaktivitet over tid",
+					"charts.upstreamServers": "Oppstraumstenarar",
+					"charts.blocked": "Blokkerte",
+					"charts.cached": "Mellomlagra",
+					"charts.forwarded": "Vidaresendt",
+					"charts.other": "Andre",
+					"charts.otherClients.one": "Annan klient ({count})",
+					"charts.otherClients.other": "Andre klientar ({count})",
+					"charts.unknownUpstream": "ukjend",
+					"queries.timeRange": "Tidsrom",
+					"queries.rangeHours.one": "Siste time",
+					"queries.rangeHours.other": "Siste {count} timar",
+					"queries.rangeDays.one": "Siste dag",
+					"queries.rangeDays.other": "Siste {count} dagar",
+					"queries.domainClientFilter": "Filtrer domene/klient",
+					"queries.domainClientPlaceholder": "t.d. netflix.com eller 192.168...",
+					"queries.server": "Tenar",
+					"queries.all": "Alle",
+					"queries.client": "Klient",
+					"queries.allClients": "Alle klientar",
+					"queries.type": "Type",
+					"queries.allTypes": "Alle typar",
+					"queries.pageSize": "Rader per side",
+					"queries.reload": "Last på nytt",
+					"queries.loading": "Lastar…",
+					"queries.loginRequired": "Logg inn på minst éin tenar for å sjå førespurnader.",
+					"queries.empty": "Fann ingen førespurnader for valt tidsrom og filter.",
+					"queries.time": "Tid",
+					"queries.status": "Status",
+					"queries.domain": "Domene",
+					"queries.serverError": "{server}: {error}",
+					"queries.loadingMore.one": "{count} førespurnad vart lasta raskt – lastar resten av tidsrommet i bakgrunnen…",
+					"queries.loadingMore.other": "{count} førespurnader vart lasta raskt – lastar resten av tidsrommet i bakgrunnen…",
+					"queries.total.one": "{count} førespurnad totalt for valt tidsrom.",
+					"queries.total.other": "{count} førespurnader totalt for valt tidsrom.",
+					"queries.truncated.one": "{count} førespurnad lasta for valt tidsrom – det kan finnast fleire. Avgrens tidsrommet for å få fullstendige resultat.",
+					"queries.truncated.other": "{count} førespurnader lasta for valt tidsrom – det kan finnast fleire. Avgrens tidsrommet for å få fullstendige resultat.",
+					"domains.loading": "Lastar…",
+					"domains.domain": "Domene",
+					"domains.type": "Type",
+					"domains.kind": "Samsvarstype",
+					"domains.comment": "Kommentar",
+					"domains.missing": "manglar",
+					"domains.add": "Legg til",
+					"domains.delete": "Slett",
+					"domains.empty": "Ingen domene er lagde til enno.",
+					"domains.addTitle": "Legg til domene",
+					"domains.domainOrRegex": "Domene (eller regulært uttrykk)",
+					"domains.domainPlaceholder": "t.d. ads.example.com",
+					"domains.allow": "Tillat",
+					"domains.block": "Blokker",
+					"domains.exact": "Nøyaktig",
+					"domains.regex": "Regex",
+					"domains.optional": "valfritt",
+					"domains.addTo": "Legg til på",
+					"domains.title": "Domenelister",
+					"domains.reload": "Last på nytt",
+					"domains.loginRequired": "Logg inn for å sjå domenelister.",
+					"domains.active": "aktiv",
+					"domains.deactivate": "Slå av",
+					"domains.ruleBlock": "Blokker",
+					"domains.ruleRegex": "Regex",
+					"domains.notLoggedIn": "{server}: ikkje innlogga",
+					"domains.added": "{server}: domene lagt til",
+					"domains.updated": "{server}: domene oppdatert",
+					"domains.confirmDelete": "Slette domenet «{domain}» frå {servers}?",
+					"domains.deleted": "Sletta frå {servers}",
+					"domains.disabled": "slått av",
+					"domains.activate": "Slå på",
+					"hosts.addTitle": "Legg til lokal DNS-oppføring",
+					"hosts.ipAddress": "IP-adresse",
+					"hosts.domainName": "Domenenamn",
+					"hosts.hostnamePlaceholder": "nas.home",
+					"hosts.addTo": "Legg til på",
+					"hosts.add": "Legg til",
+					"hosts.title": "Lokale DNS-oppføringar",
+					"hosts.reload": "Last på nytt",
+					"hosts.loading": "Lastar…",
+					"hosts.empty": "Ingen lokale DNS-oppføringar er definerte enno.",
+					"hosts.active": "aktiv",
+					"hosts.missing": "manglar",
+					"hosts.delete": "Slett",
+					"hosts.exampleIntro": "Til dømes for ei eining i heimenettverket ditt:",
+					"hosts.exampleRecord": "192.168.1.50 nas.home",
+					"hosts.loginRequired": "Logg inn for å sjå lokale DNS-oppføringar.",
+					"hosts.nameHeading": "Domenenamn",
+					"hosts.useSource": "Bruk {source} på {target}",
+					"hosts.confirmReplace": "Erstatte IP-adressa for «{name}» på {target}?\n\n{oldIp} blir endra til {newIp} frå {source}.",
+					"hosts.updated": "{server}: DNS-oppføring oppdatert til {ip}",
+					"hosts.restoredAfterFailure": "{server}: endringa feila, og den opphavlege oppføringa vart gjenoppretta",
+					"hosts.restoreFailed": "{server}: endringa feila, og den opphavlege oppføringa kunne ikkje gjenopprettast",
+					"hosts.confirmDelete": "Slette DNS-oppføringa «{name}» frå {servers}?",
+					"hosts.deleted": "Sletta frå {servers}",
+					"hosts.notLoggedIn": "{server}: ikkje innlogga",
+					"hosts.promptIp": "IP-adresse for {name} på {server}:",
+					"hosts.added": "{server}: DNS-oppføring lagd til",
+					"clients.addTitle": "Legg til kjend klient",
+					"clients.identifierHelp": "IP-adresse, IP-område (CIDR), MAC-adresse eller vertsnamn.",
+					"clients.client": "Klient",
+					"clients.description": "Skildring",
+					"clients.descriptionPlaceholder": "t.d. TV-en i stova",
+					"clients.addTo": "Legg til på",
+					"clients.add": "Legg til",
+					"clients.title": "Klientar",
+					"clients.pageSize": "Vis per side",
+					"clients.all": "Alle",
+					"clients.reload": "Last på nytt",
+					"clients.loading": "Lastar…",
+					"clients.unknownTitle": "Ukjende einingar på nettverket",
+					"clients.unknownHelp": "Einingar som har sendt førespurnader til Pi-hole, men som ikkje er lagde til som klientar enno. Gi dei eit namn og legg dei til.",
+					"clients.empty": "Ingen klientar er lagde til enno.",
+					"clients.active": "aktiv",
+					"clients.missing": "manglar",
+					"clients.delete": "Slett",
+					"clients.unknownEmpty": "Ingen ukjende einingar – alle einingar som Pi-hole kjenner til, er alt lagde til som klientar.",
+					"clients.identifier": "Identifikator",
+					"clients.knownNames": "Kjende namn",
+					"clients.vendor": "Produsent",
+					"clients.seenBy": "Sett av",
+					"clients.name": "Namn",
+					"clients.clientHeading": "Klient",
+					"clients.descriptionHeading": "Skildring",
+					"clients.notLoggedIn": "{server}: ikkje innlogga",
+					"clients.added": "{server}: klient lagd til",
+					"clients.confirmDelete": "Slette klienten {client} frå {servers}?",
+					"clients.deleted.one": "Klienten vart sletta frå {count} tenar",
+					"clients.loginRequired": "Logg inn for å sjå klientar.",
+					"clients.deleted.other": "Klienten vart sletta frå {count} tenarar",
+					"lists.loading": "Lastar…",
+					"lists.url": "URL",
+					"lists.type": "Type",
+					"lists.comment": "Kommentar",
+					"lists.missing": "manglar",
+					"lists.add": "Legg til",
+					"lists.delete": "Slett",
+					"lists.empty": "Ingen lister er lagde til enno.",
+					"lists.addTitle": "Legg til blokkeringsliste / tillatingsliste",
+					"lists.block": "Blokker",
+					"lists.allow": "Tillat",
+					"lists.optional": "valfritt",
+					"lists.addTo": "Legg til på",
+					"lists.title": "Lister",
+					"lists.reload": "Last på nytt",
+					"lists.loginRequired": "Logg inn for å sjå lister.",
+					"lists.active": "aktiv",
+					"lists.ruleAllow": "Tillat",
+					"lists.confirmDelete": "Slette lista «{url}» frå {servers}?",
+					"lists.deleted": "Sletta frå {servers}",
+					"lists.notLoggedIn": "{server}: ikkje innlogga",
+					"lists.added": "{server}: liste lagd til",
+					"lists.disabled": "slått av",
+					"gravity.title": "Gravity",
+					"gravity.lastUpdate": "Siste Gravity-oppdatering",
+					"gravity.loading": "Lastar…",
+					"gravity.notLoggedIn": "Ikkje innlogga.",
+					"gravity.statusError": "Klarte ikkje hente status.",
+					"gravity.updateServer": "Oppdater Gravity – {server}",
+					"gravity.ready": "Klar.",
+					"gravity.running": "Oppdaterer Gravity…",
+					"gravity.done": "Ferdig",
+					"gravity.httpError": "Feil: HTTP {status}",
+					"gravity.error": "Feil: {error}",
+					"settings.helpSummary": "Oppsett – les dette om du får «CORS»- eller «Failed to fetch»-feil",
+					"settings.proxyRequirement": "Kvar aktive Pi-hole treng sin eigen proxysti på same domene som dashbordet:",
+					"settings.proxyExample": "nginx-døme (gjenta for kvar aktive Pi-hole):",
+					"settings.proxyConfiguration": "Endre API-stiane i DEFAULT_SERVERS og den tilsvarande nginx-konfigurasjonen.",
+					"settings.appPasswordTitle": "Bruk eit appassord i staden for det vanlege passordet",
+					"settings.appPasswordHelp": "Opne Innstillingar → API i administrasjonsgrensesnittet til kvar Pi-hole, og lag eit appassord. Skriv det inn her i staden for det vanlege passordet.",
+					"settings.sessionsTitle": "Økter",
+					"settings.sessionsHelp": "Innloggingsøkta (SID) blir berre lagra i sessionStorage i nettlesaren. Ho blir fjerna når du lukkar fana. Passord blir aldri lagra.",
+					"settings.title": "Pi-hole",
+					"settings.namesHelp": "Namn blir berre lagra i denne nettlesaren. Standardnamn set du i DEFAULT_SERVERS i fila.",
+					"settings.server": "Pi-hole {id}",
+					"settings.label": "Merkelapp",
+					"settings.save": "Lagre",
+					"settings.saved": "Lagra. Lastar status på nytt…",
+					"domains.requestError": "{server}: {error}",
+					"hosts.requestError": "{server}: {error}",
+					"clients.requestError": "{server}: {error}",
+					"lists.requestError": "{server}: {error}",
+					"common.networkError": "Tilkoplinga til Pi-hole-API-et feila. Sjekk nettverket og proxy-oppsettet. HTTP-omdirigeringar blir ikkje godtekne.",
+					"common.languageCredit": "Omsetjing: {author}"
+				},
+				"nb": {
+					"updates.checking": "Ser etter oppdateringer…",
+					"updates.current": "Ingen nyere versjon funnet. Installert: v{current}.",
+					"updates.available": "Ny versjon tilgjengelig: v{latest}. Installert: v{current}.",
+					"updates.releases": "Se utgivelser",
+					"updates.error": "Kunne ikke se etter oppdateringer.",
+					"app.title": "Dobbelt-Pi-hole v{version} · Dashbord",
+					"app.description": "Et samlet dashbord for to, tre eller fire Pi-hole v6-instanser.",
+					"app.headingSuffix": "· dashbord",
+					"app.language": "Språk",
+					"app.themeToggle": "Bytt mellom lys og mørk modus",
+					"tabs.dashboard": "Dashbord",
+					"tabs.queries": "Forespørsler",
+					"tabs.domains": "Domener",
+					"tabs.hosts": "Lokal DNS",
+					"tabs.clients": "Klienter",
+					"tabs.lists": "Lister",
+					"tabs.gravity": "Gravity",
+					"tabs.settings": "Innstillinger",
+					"common.loading": "Laster…",
+					"common.never": "aldri",
+					"common.error": "Det oppstod en feil: {error}",
+					"common.serverError": "{server}: {error}",
+					"common.both": "Begge",
+					"common.all": "Alle",
+					"auth.checking": "kontrollerer…",
+					"auth.connected": "tilkoblet",
+					"auth.notConnected": "ikke logget inn",
+					"auth.notConnectedOn": "Ikke logget inn på {server}",
+					"auth.login": "Logg inn",
+					"auth.logout": "Logg ut",
+					"auth.password": "Passord / appassord",
+					"auth.passwordFor": "Passord / appassord for {server}",
+					"auth.loginFailed": "Innloggingen mislyktes",
+					"auth.loggedIn": "Logget inn på {server}",
+					"auth.loggedOut": "Logget ut fra {server}",
+					"pagination.showing": "Viser {shown} av {total}",
+					"pagination.previous": "‹ Forrige",
+					"pagination.next": "Neste ›",
+					"pagination.page": "Side {page} / {pages}",
+					"dashboard.notLoggedIn": "Ikke logget inn.",
+					"dashboard.statusUnavailable": "Kunne ikke laste status.",
+					"dashboard.blockingEnabled": "blokkerer",
+					"dashboard.blockingDisabled": "slått av",
+					"dashboard.queriesToday.one": "forespørsel i dag",
+					"dashboard.queriesToday.other": "forespørsler i dag",
+					"dashboard.blocked": "Blokkerte",
+					"dashboard.blocklistDomains": "Domener på blokkeringslisten",
+					"dashboard.clients": "Klienter",
+					"dashboard.clientsSummary.one": "{count} aktiv / {total} totalt",
+					"dashboard.clientsSummary.other": "{count} aktive / {total} totalt",
+					"dashboard.gravityUpdated": "Siste Gravity-oppdatering",
+					"dashboard.disableBlocking": "Slå av blokkering",
+					"dashboard.enableBlocking": "Slå på blokkering",
+					"dashboard.logout": "Logg ut",
+					"dashboard.total": "SAMLET",
+					"dashboard.totalQueriesToday.one": "forespørsel i dag (alle aktive tjenere)",
+					"dashboard.totalQueriesToday.other": "forespørsler i dag (alle aktive tjenere)",
+					"dashboard.blockedTotal": "Totalt blokkert",
+					"dashboard.blockedPercent": "Blokkert %",
+					"dashboard.totalHint": "Disse tallene er summen av alle aktive Pi-hole-instanser. Bruk fanen Gravity for å oppdatere blokkeringslister og fanen Forespørsler for en samlet logg.",
+					"dashboard.blockingEnabledToast": "{server}: blokkering slått på",
+					"dashboard.blockingDisabledToast": "{server}: blokkering slått av",
+					"dashboard.serverError": "{server}: {error}",
+					"dashboard.noData": "Ingen data.",
+					"dashboard.details": "detaljer",
+					"dashboard.topAllowedDomains": "Mest tillatte domener",
+					"dashboard.topBlockedDomains": "Mest blokkerte domener",
+					"dashboard.topClients": "Mest aktive klienter",
+					"charts.queryTypes": "Forespørselstyper",
+					"charts.libraryUnavailable": "Diagrambiblioteket (Chart.js) kunne ikke lastes fra den lokale filen {chartFile}. Sjekk at filen ligger i samme mappe som {pageFile} på tjeneren, og at nginx kan lese den. Resten av dashbordet fungerer som vanlig.",
+					"charts.queriesOverTime": "Forespørsler over tid",
+					"charts.clientActivityOverTime": "Klientaktivitet over tid",
+					"charts.upstreamServers": "Oppstrømstjenere",
+					"charts.blocked": "Blokkerte",
+					"charts.cached": "Mellomlagret",
+					"charts.forwarded": "Videresendt",
+					"charts.other": "Andre",
+					"charts.otherClients.one": "Annen klient ({count})",
+					"charts.otherClients.other": "Andre klienter ({count})",
+					"charts.unknownUpstream": "ukjent",
+					"queries.timeRange": "Tidsrom",
+					"queries.rangeHours.one": "Siste time",
+					"queries.rangeHours.other": "Siste {count} timer",
+					"queries.rangeDays.one": "Siste dag",
+					"queries.rangeDays.other": "Siste {count} dager",
+					"queries.domainClientFilter": "Filtrer domene/klient",
+					"queries.domainClientPlaceholder": "f.eks. netflix.com eller 192.168...",
+					"queries.server": "Tjener",
+					"queries.all": "Alle",
+					"queries.client": "Klient",
+					"queries.allClients": "Alle klienter",
+					"queries.type": "Type",
+					"queries.allTypes": "Alle typer",
+					"queries.pageSize": "Rader per side",
+					"queries.reload": "Last inn på nytt",
+					"queries.loading": "Laster…",
+					"queries.loginRequired": "Logg inn på minst én tjener for å se forespørsler.",
+					"queries.empty": "Fant ingen forespørsler for valgt tidsrom og filtre.",
+					"queries.time": "Tid",
+					"queries.status": "Status",
+					"queries.domain": "Domene",
+					"queries.serverError": "{server}: {error}",
+					"queries.loadingMore.one": "{count} forespørsel ble lastet raskt – laster resten av tidsrommet i bakgrunnen…",
+					"queries.loadingMore.other": "{count} forespørsler ble lastet raskt – laster resten av tidsrommet i bakgrunnen…",
+					"queries.total.one": "{count} forespørsel totalt for valgt tidsrom.",
+					"queries.total.other": "{count} forespørsler totalt for valgt tidsrom.",
+					"queries.truncated.one": "{count} forespørsel lastet for valgt tidsrom – det kan finnes flere. Avgrens tidsrommet for å få fullstendige resultater.",
+					"queries.truncated.other": "{count} forespørsler lastet for valgt tidsrom – det kan finnes flere. Avgrens tidsrommet for å få fullstendige resultater.",
+					"domains.loading": "Laster…",
+					"domains.domain": "Domene",
+					"domains.type": "Type",
+					"domains.kind": "Samsvarstype",
+					"domains.comment": "Kommentar",
+					"domains.missing": "mangler",
+					"domains.add": "Legg til",
+					"domains.delete": "Slett",
+					"domains.empty": "Ingen domener er lagt til ennå.",
+					"domains.addTitle": "Legg til domene",
+					"domains.domainOrRegex": "Domene (eller regulært uttrykk)",
+					"domains.domainPlaceholder": "f.eks. ads.example.com",
+					"domains.allow": "Tillat",
+					"domains.block": "Blokker",
+					"domains.exact": "Nøyaktig",
+					"domains.regex": "Regex",
+					"domains.optional": "valfritt",
+					"domains.addTo": "Legg til på",
+					"domains.title": "Domenelister",
+					"domains.reload": "Last inn på nytt",
+					"domains.loginRequired": "Logg inn for å se domenelister.",
+					"domains.active": "aktiv",
+					"domains.deactivate": "Slå av",
+					"domains.ruleBlock": "Blokker",
+					"domains.ruleRegex": "Regex",
+					"domains.notLoggedIn": "{server}: ikke logget inn",
+					"domains.added": "{server}: domene lagt til",
+					"domains.updated": "{server}: domene oppdatert",
+					"domains.confirmDelete": "Slette domenet «{domain}» fra {servers}?",
+					"domains.deleted": "Slettet fra {servers}",
+					"domains.disabled": "slått av",
+					"domains.activate": "Slå på",
+					"hosts.addTitle": "Legg til lokal DNS-oppføring",
+					"hosts.ipAddress": "IP-adresse",
+					"hosts.domainName": "Domenenavn",
+					"hosts.hostnamePlaceholder": "nas.home",
+					"hosts.addTo": "Legg til på",
+					"hosts.add": "Legg til",
+					"hosts.title": "Lokale DNS-oppføringer",
+					"hosts.reload": "Last inn på nytt",
+					"hosts.loading": "Laster…",
+					"hosts.empty": "Ingen lokale DNS-oppføringer er definert ennå.",
+					"hosts.active": "aktiv",
+					"hosts.missing": "mangler",
+					"hosts.delete": "Slett",
+					"hosts.exampleIntro": "For eksempel for en enhet på hjemmenettverket ditt:",
+					"hosts.exampleRecord": "192.168.1.50 nas.home",
+					"hosts.loginRequired": "Logg inn for å se lokale DNS-oppføringer.",
+					"hosts.nameHeading": "Domenenavn",
+					"hosts.useSource": "Bruk {source} på {target}",
+					"hosts.confirmReplace": "Erstatte IP-adressen for «{name}» på {target}?\n\n{oldIp} endres til {newIp} fra {source}.",
+					"hosts.updated": "{server}: DNS-oppføring oppdatert til {ip}",
+					"hosts.restoredAfterFailure": "{server}: endringen mislyktes, og den opprinnelige oppføringen ble gjenopprettet",
+					"hosts.restoreFailed": "{server}: endringen mislyktes, og den opprinnelige oppføringen kunne ikke gjenopprettes",
+					"hosts.confirmDelete": "Slette DNS-oppføringen «{name}» fra {servers}?",
+					"hosts.deleted": "Slettet fra {servers}",
+					"hosts.notLoggedIn": "{server}: ikke logget inn",
+					"hosts.promptIp": "IP-adresse for {name} på {server}:",
+					"hosts.added": "{server}: DNS-oppføring lagt til",
+					"clients.addTitle": "Legg til kjent klient",
+					"clients.identifierHelp": "IP-adresse, IP-område (CIDR), MAC-adresse eller vertsnavn.",
+					"clients.client": "Klient",
+					"clients.description": "Beskrivelse",
+					"clients.descriptionPlaceholder": "f.eks. TV-en i stua",
+					"clients.addTo": "Legg til på",
+					"clients.add": "Legg til",
+					"clients.title": "Klienter",
+					"clients.pageSize": "Vis per side",
+					"clients.all": "Alle",
+					"clients.reload": "Last inn på nytt",
+					"clients.loading": "Laster…",
+					"clients.unknownTitle": "Ukjente enheter på nettverket",
+					"clients.unknownHelp": "Enheter som har sendt forespørsler til Pi-hole, men som ikke er lagt til som klienter ennå. Gi dem et navn og legg dem til.",
+					"clients.empty": "Ingen klienter er lagt til ennå.",
+					"clients.active": "aktiv",
+					"clients.missing": "mangler",
+					"clients.delete": "Slett",
+					"clients.unknownEmpty": "Ingen ukjente enheter – alle enheter som Pi-hole kjenner til, er allerede lagt til som klienter.",
+					"clients.identifier": "Identifikator",
+					"clients.knownNames": "Kjente navn",
+					"clients.vendor": "Produsent",
+					"clients.seenBy": "Sett av",
+					"clients.name": "Navn",
+					"clients.clientHeading": "Klient",
+					"clients.descriptionHeading": "Beskrivelse",
+					"clients.notLoggedIn": "{server}: ikke logget inn",
+					"clients.added": "{server}: klient lagt til",
+					"clients.confirmDelete": "Slette klienten {client} fra {servers}?",
+					"clients.deleted.one": "Klienten ble slettet fra {count} tjener",
+					"clients.loginRequired": "Logg inn for å se klienter.",
+					"clients.deleted.other": "Klienten ble slettet fra {count} tjenere",
+					"lists.loading": "Laster…",
+					"lists.url": "URL",
+					"lists.type": "Type",
+					"lists.comment": "Kommentar",
+					"lists.missing": "mangler",
+					"lists.add": "Legg til",
+					"lists.delete": "Slett",
+					"lists.empty": "Ingen lister er lagt til ennå.",
+					"lists.addTitle": "Legg til blokkeringsliste / tillatelsesliste",
+					"lists.block": "Blokker",
+					"lists.allow": "Tillat",
+					"lists.optional": "valfritt",
+					"lists.addTo": "Legg til på",
+					"lists.title": "Lister",
+					"lists.reload": "Last inn på nytt",
+					"lists.loginRequired": "Logg inn for å se lister.",
+					"lists.active": "aktiv",
+					"lists.ruleAllow": "Tillat",
+					"lists.confirmDelete": "Slette listen «{url}» fra {servers}?",
+					"lists.deleted": "Slettet fra {servers}",
+					"lists.notLoggedIn": "{server}: ikke logget inn",
+					"lists.added": "{server}: liste lagt til",
+					"lists.disabled": "slått av",
+					"gravity.title": "Gravity",
+					"gravity.lastUpdate": "Siste Gravity-oppdatering",
+					"gravity.loading": "Laster…",
+					"gravity.notLoggedIn": "Ikke logget inn.",
+					"gravity.statusError": "Kunne ikke hente status.",
+					"gravity.updateServer": "Oppdater Gravity – {server}",
+					"gravity.ready": "Klar.",
+					"gravity.running": "Oppdaterer Gravity…",
+					"gravity.done": "Ferdig",
+					"gravity.httpError": "Feil: HTTP {status}",
+					"gravity.error": "Feil: {error}",
+					"settings.helpSummary": "Oppsett – les dette hvis du får «CORS»- eller «Failed to fetch»-feil",
+					"settings.proxyRequirement": "Hver aktive Pi-hole trenger sin egen proxy-sti på samme domene som dashbordet:",
+					"settings.proxyExample": "nginx-eksempel (gjenta for hver aktive Pi-hole):",
+					"settings.proxyConfiguration": "Endre API-stiene i DEFAULT_SERVERS og den tilsvarende nginx-konfigurasjonen.",
+					"settings.appPasswordTitle": "Bruk et appassord i stedet for det vanlige passordet",
+					"settings.appPasswordHelp": "Åpne Innstillinger → API i administrasjonsgrensesnittet til hver Pi-hole, og lag et appassord. Skriv det inn her i stedet for det vanlige passordet.",
+					"settings.sessionsTitle": "Økter",
+					"settings.sessionsHelp": "Innloggingsøkten (SID) lagres bare i nettleserens sessionStorage. Den fjernes når du lukker fanen. Passord lagres aldri.",
+					"settings.title": "Pi-hole",
+					"settings.namesHelp": "Navn lagres bare i denne nettleseren. Standardnavn setter du i DEFAULT_SERVERS i filen.",
+					"settings.server": "Pi-hole {id}",
+					"settings.label": "Merkelapp",
+					"settings.save": "Lagre",
+					"settings.saved": "Lagret. Laster status på nytt…",
+					"domains.requestError": "{server}: {error}",
+					"hosts.requestError": "{server}: {error}",
+					"clients.requestError": "{server}: {error}",
+					"lists.requestError": "{server}: {error}",
+					"common.networkError": "Tilkoblingen til Pi-hole-API-et mislyktes. Sjekk nettverket og proxy-oppsettet. HTTP-omdirigeringer godtas ikke.",
+					"common.languageCredit": "Oversettelse: {author}"
 				}
 			};
 
 			/* Indbyggede sprog og sprogbidrag bruger samme nøgler og parametre som almindelig tekst. */
-			const APP_VERSION = "1.4.008";
+			const APP_VERSION = "1.4.010";
+
+			/* Versionstjek: version.js indeholder kun fx v1.4.010, aldrig eksekverbar kode.
+			 * /versioncheck/ skal proxys via nginx. Ingen Pi-hole loginoplysninger sendes.
+			 * Tekster vedligeholdes i I18N sammen med resten af brugerfladen. */
+
+			// Sæt kun til true i Docker udgaven. Almindelig download bruger false.
+			const DOCKER_INSTALLATION = false;
+			const VERSION_SESSION_KEY = "ph_versioncheck_" + APP_VERSION;
+			const versionCheckState = {status: "idle", latest: null};
+			function parseReleaseVersion(value) {
+				const match = /^v?(\d{1,9})\.(\d{1,9})\.(\d{1,9})$/u.exec(String(value).trim());
+				return match ? match.slice(1).map(Number) : null;
+			}
+			function isNewerRelease(latest, current) {
+				for (let i = 0; i < 3; i++) {
+					if (latest[i] !== current[i]) return latest[i] > current[i];
+				}
+				return false;
+			}
+			function hasAvailableUpdate() {
+				if (!DOCKER_INSTALLATION) return false;
+				const latest = parseReleaseVersion(versionCheckState.latest || "");
+				return latest !== null && isNewerRelease(latest, parseReleaseVersion(APP_VERSION));
+			}
+			function updateBadgeHtml() {
+				if (!hasAvailableUpdate()) return "";
+				const label = msg("updates.available", {latest: versionCheckState.latest, current: APP_VERSION});
+				return `<span class="update-dot" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}"></span>`;
+			}
+			function renderVersionCheck() {
+				const settingsButton = document.querySelector('#tabs button[data-tab="settings"]');
+				if (settingsButton) settingsButton.innerHTML = htmlMsg("tabs.settings") + updateBadgeHtml();
+				const area = document.getElementById("versionCheckStatus");
+				if (!area) return;
+				area.hidden = !DOCKER_INSTALLATION;
+				if (!DOCKER_INSTALLATION) {area.replaceChildren(); return;}
+				area.replaceChildren();
+				const status = versionCheckState.status === "idle" ? "checking" : versionCheckState.status;
+				area.textContent = msg("updates." + (status === "update" ? "available" : status), {current: APP_VERSION, latest: versionCheckState.latest || ""});
+				if (hasAvailableUpdate()) {
+					const link = document.createElement("a");
+					link.href = "https://github.com/tursoe/Dobbelt-Pi-hole/releases";
+					link.target = "_blank";
+					link.rel = "noopener noreferrer";
+					link.textContent = msg("updates.releases");
+					area.append(" ", link);
+				}
+			}
+			async function checkForUpdates() {
+				if (!DOCKER_INSTALLATION) return;
+				if (versionCheckState.status === "checking") return;
+				versionCheckState.status = "checking";
+				// Gem også forsøget: genindlæsning i samme session udløser ikke nye kald.
+				storeValue(VERSION_SESSION_KEY, JSON.stringify({status: "error", latest: versionCheckState.latest}), "sessionStorage");
+				renderVersionCheck();
+				const controller = new AbortController();
+				const timeout = setTimeout(() => controller.abort(), 8000);
+				try {
+					const response = await fetch("/versioncheck/", {
+						cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: controller.signal
+					});
+					if (!response.ok) throw new Error("Version endpoint HTTP " + response.status);
+					const raw = (await response.text()).trim();
+					const latest = parseReleaseVersion(raw);
+					const current = parseReleaseVersion(APP_VERSION);
+					if (!latest || !current) throw new Error("Invalid release version");
+					versionCheckState.latest = raw.replace(/^v/u, "");
+					versionCheckState.status = isNewerRelease(latest, current) ? "update" : "current";
+				} catch {
+					versionCheckState.status = "error";
+				} finally {
+					clearTimeout(timeout);
+					storeValue(VERSION_SESSION_KEY, JSON.stringify(versionCheckState), "sessionStorage");
+					renderVersionCheck();
+				}
+			}
+			function initVersionCheck() {
+				if (!DOCKER_INSTALLATION) return;
+				try {
+					const cached = JSON.parse(storedValue(VERSION_SESSION_KEY, "sessionStorage") || "null");
+					if (cached && ["current", "update", "error"].includes(cached.status)
+						&& (cached.latest === null || parseReleaseVersion(cached.latest))) {
+						versionCheckState.latest = cached.latest;
+						versionCheckState.status = cached.status;
+						renderVersionCheck();
+						return;
+					}
+				} catch { /* Ugyldig eller utilgængelig sessionslagring: tjek ved åbning. */ }
+				void checkForUpdates();
+			}
+
 			const LANGUAGE_KEY = "ph_combo_language";
 			/** Registrér komplette, valgfrie sprogbidrag uden at ændre de indbyggede sprog. */
 			function availableLanguages(additions = window.PIHOLE_LANGUAGES) {
 				const languages = {
 					da: {label: "Dansk", locale: "da-DK"},
-					en: {label: "English", locale: "en-GB"}
+					en: {label: "English", locale: "en-GB"},
+					nn: {label: "Norsk nynorsk", locale: "nn-NO", author: "Roy-Magne Mo"},
+					nb: {label: "Norsk bokmål", locale: "nb-NO", author: "Roy-Magne Mo"}
 				};
 				if (!additions || typeof additions !== "object" || Array.isArray(additions)) return languages;
 				const keys = Object.keys(I18N.en);
@@ -1476,9 +2106,10 @@
 						new Intl.DateTimeFormat(pack.locale);
 						new Intl.PluralRules(pack.locale);
 					} catch {continue;}
-					if (Object.keys(pack.messages).length !== keys.length || !keys.every(key =>
-						Object.hasOwn(pack.messages, key) && typeof pack.messages[key] === "string"
-						&& pack.messages[key].trim()
+					// Ældre sprogpakker må mangle updates.*; msg() bruger da engelsk fallback.
+					if (Object.keys(pack.messages).some(key => !Object.hasOwn(I18N.en, key)) || !keys.every(key =>
+						!Object.hasOwn(pack.messages, key) ? key.startsWith("updates.")
+						: typeof pack.messages[key] === "string" && pack.messages[key].trim()
 						&& parameters(pack.messages[key]) === parameters(I18N.en[key]))) continue;
 					I18N[code] = {...pack.messages};
 					languages[code] = {
@@ -1673,6 +2304,7 @@
 				if (select) select.value = code;
 				applyI18n();
 				updateLanguageCredit();
+				renderVersionCheck();
 				renderTabs();
 				renderPills();
 				if (rerender && state.activeTab) {
@@ -1701,6 +2333,7 @@
 				document.documentElement.lang = currentLanguage;
 				applyI18n();
 				updateLanguageCredit();
+				renderVersionCheck();
 			}
 
 			function uiConfirm(message) {return window.confirm(message);}
@@ -1987,7 +2620,7 @@
 			}
 			function renderTabs() {
 				const t = document.getElementById("tabs");
-				t.innerHTML = TABS.map(([t, e]) => `<button data-tab="${t}" class="${state.activeTab === t ? "active" : ""}">${htmlMsg(e)}</button>`).join("");
+				t.innerHTML = TABS.map(([t, e]) => `<button data-tab="${t}" class="${state.activeTab === t ? "active" : ""}">${htmlMsg(e)}${t === "settings" ? updateBadgeHtml() : ""}</button>`).join("");
 				for (const e of t.querySelectorAll("button")) e.addEventListener("click", () => switchTab(e.dataset.tab));
 			}
 			function renderPills() {
@@ -2370,7 +3003,7 @@
 				}
 			}
 			async function renderQueries(t, e) {
-				t.innerHTML = `\n\t\t\t\t<div class="card">\n\t\t\t\t<div class="flex-between" style="margin-bottom:12px;flex-wrap:wrap;">\n\t\t\t\t\t<div class="row-inline">\n\t\t\t\t\t<label class="field" style="min-width:150px;"><span>${htmlMsg("queries.timeRange")}</span>\n\t\t\t\t\t\t<select id="qRange">\n\t\t\t\t\t\t<option value="1">${escapeHtml(msgCount("queries.rangeHours", 1))}</option>\n\t\t\t\t\t\t<option value="6" selected>${escapeHtml(msgCount("queries.rangeHours", 6))}</option>\n\t\t\t\t\t\t<option value="24">${escapeHtml(msgCount("queries.rangeHours", 24))}</option>\n\t\t\t\t\t\t<option value="72">${escapeHtml(msgCount("queries.rangeDays", 3))}</option>\n\t\t\t\t\t\t<option value="168">${escapeHtml(msgCount("queries.rangeDays", 7))}</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:170px;"><span>${htmlMsg("queries.domainClientFilter")}</span>\n\t\t\t\t\t\t<input type="text" id="qFilter" placeholder="${htmlMsg("queries.domainClientPlaceholder")}">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:120px;"><span>${htmlMsg("queries.server")}</span>\n\t\t\t\t\t\t<select id="qServerFilter">\n\t\t\t\t\t\t<option value="all">${htmlMsg("queries.all")}</option>\n\t\t\t\t\t\t${state.servers.map(t => `<option value="${t.id}">${escapeHtml(t.label)}</option>`).join("")}\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:180px;"><span>${htmlMsg("queries.client")}</span>\n\t\t\t\t\t\t<select id="qClientFilter"><option value="all">${htmlMsg("queries.allClients")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.type")}</span>\n\t\t\t\t\t\t<select id="qTypeFilter"><option value="all">${htmlMsg("queries.allTypes")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.pageSize")}</span>\n\t\t\t\t\t\t<select id="qPageSize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="250">250</option><option value="all">${htmlMsg("queries.all")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<button class="btn primary" id="qReload">${htmlMsg("queries.reload")}</button>\n\t\t\t\t</div>\n\t\t\t\t<p class="sub" id="qStatus"></p>\n\t\t\t\t<div id="qArea"><p class="empty">${htmlMsg("queries.loading")}</p></div>\n\t\t\t\t</div>`;
+				t.innerHTML = `\n\t\t\t\t<div class="card">\n\t\t\t\t<div class="flex-between" style="margin-bottom:12px;flex-wrap:wrap;">\n\t\t\t\t\t<div class="row-inline">\n\t\t\t\t\t<label class="field" style="min-width:150px;"><span>${htmlMsg("queries.timeRange")}</span>\n\t\t\t\t\t\t<select id="qRange">\n\t\t\t\t\t\t<option value="1">${escapeHtml(msgCount("queries.rangeHours", 1))}</option>\n\t\t\t\t\t\t<option value="6" selected>${escapeHtml(msgCount("queries.rangeHours", 6))}</option>\n\t\t\t\t\t\t<option value="24">${escapeHtml(msgCount("queries.rangeHours", 24))}</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:170px;"><span>${htmlMsg("queries.domainClientFilter")}</span>\n\t\t\t\t\t\t<input type="text" id="qFilter" placeholder="${htmlMsg("queries.domainClientPlaceholder")}">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:120px;"><span>${htmlMsg("queries.server")}</span>\n\t\t\t\t\t\t<select id="qServerFilter">\n\t\t\t\t\t\t<option value="all">${htmlMsg("queries.all")}</option>\n\t\t\t\t\t\t${state.servers.map(t => `<option value="${t.id}">${escapeHtml(t.label)}</option>`).join("")}\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:180px;"><span>${htmlMsg("queries.client")}</span>\n\t\t\t\t\t\t<select id="qClientFilter"><option value="all">${htmlMsg("queries.allClients")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.type")}</span>\n\t\t\t\t\t\t<select id="qTypeFilter"><option value="all">${htmlMsg("queries.allTypes")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<label class="field" style="min-width:110px;"><span>${htmlMsg("queries.pageSize")}</span>\n\t\t\t\t\t\t<select id="qPageSize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="250">250</option><option value="all">${htmlMsg("queries.all")}</option></select>\n\t\t\t\t\t</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<button class="btn primary" id="qReload">${htmlMsg("queries.reload")}</button>\n\t\t\t\t</div>\n\t\t\t\t<p class="sub" id="qStatus"></p>\n\t\t\t\t<div id="qArea"><p class="empty">${htmlMsg("queries.loading")}</p></div>\n\t\t\t\t</div>`;
 				const n = uiState.queries;
 				state.servers.some(t => t.id === n.server) || (n.server = "all"), document.getElementById("qRange").value = n.range, document.getElementById("qFilter").value = n.filter, document.getElementById("qServerFilter").value = n.server, document.getElementById("qPageSize").value = n.pageSize;
 				await refreshClientNames();
@@ -3308,6 +3941,7 @@
 			</details>
 			<div class="card">
 				<h2>${htmlMsg("settings.title")}</h2>
+				${DOCKER_INSTALLATION ? '<p class="sub" id="versionCheckStatus" role="status" aria-live="polite"></p>' : ""}
 				<form id="settingsForm">
 					<p class="sub">${htmlMsg("settings.namesHelp")}</p>
 					${state.servers.map(server => `<div class="row-inline" style="margin-bottom:10px;">
@@ -3316,6 +3950,8 @@
 					<button class="btn primary" type="submit">${htmlMsg("settings.save")}</button>
 				</form>
 			</div>`;
+				renderVersionCheck();
+				void checkForUpdates();
 				document.getElementById("settingsForm").addEventListener("submit", async event => {
 					event.preventDefault();
 					for (const input of t.querySelectorAll("[data-label]")) {
@@ -3345,7 +3981,7 @@
 				});
 			}
 			async function bootstrap() {
-				initI18n(), initThemeToggle(), state.activeTab = tabFromHash(), renderPills(), await Promise.all(state.servers.map(checkSession)), renderPills(), await switchTab(state.activeTab);
+				initI18n(), initThemeToggle(), initVersionCheck(), state.activeTab = tabFromHash(), renderPills(), await Promise.all(state.servers.map(checkSession)), renderPills(), await switchTab(state.activeTab);
 			}
 			// Start kontrolpanelet.
 			window.addEventListener("hashchange", () => {

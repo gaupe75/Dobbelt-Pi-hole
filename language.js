@@ -1,5 +1,5 @@
 /*
- * Valgfrie sprogbidrag til Dobbelt Pi-hole v1.4.008.
+ * Valgfrie sprogbidrag til Dobbelt Pi-hole v1.4.010.
  * Tysk oversættelse: Daniel Dietz.
  * Baseret på hans bidrag til den nøglebaserede sprogmotor, commit 4a32733.
  * Udgivet under projektets MIT-licens. Se LICENSE.
@@ -15,6 +15,11 @@ window.PIHOLE_LANGUAGES = {
     "locale": "de-DE",
     "author": "Daniel Dietz",
     "messages": {
+      "updates.checking": "Suche nach Updates…",
+      "updates.current": "Keine neuere Version gefunden. Installiert: v{current}.",
+      "updates.available": "Neue Version verfügbar: v{latest}. Installiert: v{current}.",
+      "updates.releases": "Veröffentlichungen ansehen",
+      "updates.error": "Updates konnten nicht geprüft werden.",
       "app.title": "Dobbelt-Pi-hole v{version} · Übersicht",
       "app.description": "Ein gemeinsames Kontrollzentrum für zwei, drei oder vier Pi-hole-v6-Instanzen.",
       "app.headingSuffix": "· Kontrollzentrum",

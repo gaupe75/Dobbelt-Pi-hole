@@ -44,6 +44,11 @@ window.PIHOLE_LANGUAGES["xx"] = {
     "app.headingSuffix": "· dashboard",
     "app.language": "Language",
     "app.themeToggle": "Switch between light and dark mode",
+    "updates.checking": "Checking for updates…",
+    "updates.current": "No newer version found. Installed: v{current}.",
+    "updates.available": "New version available: v{latest}. Installed: v{current}.",
+    "updates.releases": "View releases",
+    "updates.error": "Could not check for updates.",
 
     /* Tabs */
     "tabs.dashboard": "Dashboard",
